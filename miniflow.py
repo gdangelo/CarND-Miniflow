@@ -69,6 +69,15 @@ class Sigmoid(Node):
         '''
         self.value = self._sigmoid(self.inbound_nodes[0].value)
 
+class MSE(Node):
+    def __init__(self, result, target):
+        Node.__init__(self, [result, target])
+
+    def forward(self):
+        result = self.inbound_nodes[0].value
+        target = self.inbound_nodes[1].value
+        self.value = np.sum(np.square(target - result)) / len(target)
+
 def topological_sort(feed_dict):
     '''
     Sort generic nodes in topological order using Kahn's Algorithm (https://en.wikipedia.org/wiki/Topological_sorting#Kahn.27s_algorithm).
