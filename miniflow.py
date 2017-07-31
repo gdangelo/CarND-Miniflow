@@ -30,18 +30,24 @@ class Input(Node):
         if value is not None:
             self.value = value
 
-class Add(Node):
-    def __init__(self, x, y):
-        Node.__init__(self, [x, y])
+class Linear(Node):
+    def __init__(self, inputs, weights, bias):
+        # NOTE: The weights and bias properties here are not numbers, but rather references to other nodes.
+        # The weight and bias values are stored within the respective nodes.
+        Node.__init__(self, [inputs, weights, bias])
 
     def forward(self):
-        output = 0
-        for n in self.inbound_nodes:
-            output += n.value
-        self.value = output
+        inputs = self.inbound_nodes[0].value
+        weights = self.inbound_nodes[1].value
+        bias = self.inbound_nodes[2].value
+        # Init result with bias
+        self.value = bias
+        # Apply linear transform between inputs and weigths
+        for i, w in zip(inputs, weights):
+            self.value += i*w
 
 def topological_sort(feed_dict):
-    """
+    '''
     Sort generic nodes in topological order using Kahn's Algorithm (https://en.wikipedia.org/wiki/Topological_sorting#Kahn.27s_algorithm).
 
     `feed_dict`: A dictionary where the key is a `Input` node and the value is the respective value feed to that node.
@@ -51,7 +57,7 @@ def topological_sort(feed_dict):
         feed_dict = {x: 5, y: 10}
 
     Returns a list of sorted nodes.
-    """
+    '''
 
     input_nodes = [n for n in feed_dict.keys()]
 

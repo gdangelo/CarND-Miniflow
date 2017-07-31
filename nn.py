@@ -1,11 +1,14 @@
-import miniflow as mf
+from miniflow import *
 
-x = mf.Input()
-y = mf.Input()
+inputs, weights, bias = Input(), Input(), Input()
 
-f = mf.Add(x, y)
+f = Linear(inputs, weights, bias)
 
-feed_dict = {x: 5, y: 10}
+feed_dict = {
+    inputs: [6, 14, 3],
+    weights: [0.5, 0.25, 1.4],
+    bias: 2
+}
 
-sorted_nodes = mf.topological_sort(feed_dict)
-print(mf.forward_pass(f, sorted_nodes))
+sorted_nodes = topological_sort(feed_dict)
+print(forward_pass(f, sorted_nodes))
